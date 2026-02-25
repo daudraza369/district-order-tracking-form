@@ -22,6 +22,13 @@ function doGet(e) {
       const campaigns = getCampaignsFromSheet();
       return output.setContent(JSON.stringify({ campaigns: campaigns }));
     }
+    if (action === 'insights') {
+      const range = (e.parameter.range || '').toString().trim();
+      const from = (e.parameter.from || '').toString().trim();
+      const to = (e.parameter.to || '').toString().trim();
+      const insights = getOrderInsights({ range: range, from: from, to: to });
+      return output.setContent(JSON.stringify(insights));
+    }
     return output.setContent(JSON.stringify({ campaigns: ['None'] }));
   } catch (err) {
     return output.setContent(JSON.stringify({ campaigns: ['None'], error: String(err.message) }));
@@ -42,6 +49,95 @@ function getCampaignsFromSheet() {
   var list = values.filter(function(v) { return v.length > 0; });
   var unique = list.filter(function(v, i, a) { return a.indexOf(v) === i; });
   return ['None'].concat(unique);
+}
+
+/**
+ * Read Paid Orders sheet and return aggregate insights
+ * Columns: Timestamp(1), ChatwootID(2), OrderType(3), LeadSource(4), Fulfillment(5), Campaign(6)... OrderDate(10)
+ * Uses Order Date (col 10) for date filtering - the exact date the order was placed.
+ * @param {Object} opts - { range: 'today'|'week'|'', from: 'YYYY-MM-DD', to: 'YYYY-MM-DD' }
+ */
+function getOrderInsights(opts) {
+  opts = opts || {};
+  var range = String(opts.range || '').trim();
+  var fromStr = String(opts.from || '').trim();
+  var toStr = String(opts.to || '').trim();
+
+  var today = new Date();
+  var todayStr = today.getFullYear() + '-' + String(today.getMonth() + 1).replace(/^(\d)$/, '0$1') + '-' + String(today.getDate()).replace(/^(\d)$/, '0$1');
+
+  var useFrom = null;
+  var useTo = null;
+  if (range === 'today') {
+    useFrom = todayStr;
+    useTo = todayStr;
+  } else if (range === 'week') {
+    var weekStart = new Date(today);
+    weekStart.setDate(weekStart.getDate() - 6);
+    useFrom = weekStart.getFullYear() + '-' + String(weekStart.getMonth() + 1).replace(/^(\d)$/, '0$1') + '-' + String(weekStart.getDate()).replace(/^(\d)$/, '0$1');
+    useTo = todayStr;
+  } else if (fromStr && toStr) {
+    useFrom = fromStr;
+    useTo = toStr;
+  }
+
+  var ss = SpreadsheetApp.openById(SPREADSHEET_ID);
+  var sheet = ss.getSheetByName(ORDERS_SHEET_NAME);
+  if (!sheet) return { total: 0, delivery: 0, pickup: 0, priorityDelivery: 0, today: 0 };
+  var lastRow = sheet.getLastRow();
+  if (lastRow < 2) return { total: 0, delivery: 0, pickup: 0, priorityDelivery: 0, today: 0 };
+
+  var data = sheet.getRange(2, 1, lastRow, 10).getValues();
+  var total = 0;
+  var delivery = 0;
+  var pickup = 0;
+  var priorityDelivery = 0;
+  var todayCount = 0;
+
+  function toDateStr(val) {
+    if (val === null || val === undefined || val === '') return null;
+    var d;
+    if (val instanceof Date) {
+      d = val;
+    } else if (typeof val === 'string') {
+      var s = String(val).trim();
+      var m = s.match(/^(\d{4})-(\d{1,2})-(\d{1,2})$/);
+      if (m) return m[1] + '-' + String(m[2]).replace(/^(\d)$/, '0$1') + '-' + String(m[3]).replace(/^(\d)$/, '0$1');
+      d = new Date(s);
+    } else {
+      d = new Date(val);
+    }
+    if (isNaN(d.getTime())) return null;
+    return d.getFullYear() + '-' + String(d.getMonth() + 1).replace(/^(\d)$/, '0$1') + '-' + String(d.getDate()).replace(/^(\d)$/, '0$1');
+  }
+
+  function inRange(rowDate) {
+    if (!useFrom || !useTo || !rowDate) return true;
+    return rowDate >= useFrom && rowDate <= useTo;
+  }
+
+  for (var i = 0; i < data.length; i++) {
+    var row = data[i];
+    var orderDateVal = row[9];
+    var rowDate = toDateStr(orderDateVal);
+    if (!rowDate) continue;  // Skip rows without valid timestamp (blank/totals rows)
+    if (!inRange(rowDate)) continue;
+
+    total++;
+    var fulfill = String(row[4] || '').trim();
+    if (fulfill === 'Delivery') delivery++;
+    else if (fulfill === 'Pickup') pickup++;
+    else if (fulfill === 'Priority Delivery') priorityDelivery++;
+    if (rowDate === todayStr) todayCount++;
+  }
+
+  return {
+    total: total,
+    delivery: delivery,
+    pickup: pickup,
+    priorityDelivery: priorityDelivery,
+    today: todayCount
+  };
 }
 
 /**

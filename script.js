@@ -354,6 +354,105 @@ function initBarcodeScanner() {
 
 initBarcodeScanner();
 
+// Order insights: logo click opens modal, fetch and display metrics (with date range filter)
+function initInsights() {
+  var logoBtn = document.getElementById('insightsLogoBtn');
+  var modal = document.getElementById('insightsModal');
+  var closeBtn = document.getElementById('insightsClose');
+  var rangeSel = document.getElementById('insightsRange');
+  var customWrap = document.getElementById('insightsCustomWrap');
+  var fromInput = document.getElementById('insightsFrom');
+  var toInput = document.getElementById('insightsTo');
+  var applyBtn = document.getElementById('insightsApply');
+  var els = {
+    total: document.getElementById('insightTotal'),
+    delivery: document.getElementById('insightDelivery'),
+    pickup: document.getElementById('insightPickup'),
+    priority: document.getElementById('insightPriority'),
+    today: document.getElementById('insightToday')
+  };
+  if (!logoBtn || !modal || !closeBtn) return;
+
+  function todayStr() {
+    var d = new Date();
+    return d.getFullYear() + '-' + String(d.getMonth() + 1).replace(/^(\d)$/, '0$1') + '-' + String(d.getDate()).replace(/^(\d)$/, '0$1');
+  }
+
+  function fetchInsights() {
+    var url = API_URL + (API_URL.indexOf('?') >= 0 ? '&' : '?') + 'action=insights';
+    var range = rangeSel ? rangeSel.value : '';
+    if (range === 'today' || range === 'week') {
+      url += '&range=' + encodeURIComponent(range);
+    } else if (range === 'custom' && fromInput && toInput && fromInput.value && toInput.value) {
+      url += '&from=' + encodeURIComponent(fromInput.value) + '&to=' + encodeURIComponent(toInput.value);
+    }
+    if (els.total) els.total.textContent = '—';
+    if (els.delivery) els.delivery.textContent = '—';
+    if (els.pickup) els.pickup.textContent = '—';
+    if (els.priority) els.priority.textContent = '—';
+    if (els.today) els.today.textContent = '—';
+    fetch(url)
+      .then(function (r) { return r.json(); })
+      .then(function (data) {
+        if (data.error) {
+          if (els.total) els.total.textContent = 'Error';
+          if (els.total) els.total.title = data.error;
+          return;
+        }
+        if (els.total) { els.total.textContent = data.total != null ? data.total : '—'; els.total.removeAttribute('title'); }
+        if (els.delivery) els.delivery.textContent = data.delivery != null ? data.delivery : '—';
+        if (els.pickup) els.pickup.textContent = data.pickup != null ? data.pickup : '—';
+        if (els.priority) els.priority.textContent = data.priorityDelivery != null ? data.priorityDelivery : '—';
+        if (els.today) els.today.textContent = data.today != null ? data.today : '—';
+      })
+      .catch(function (err) {
+        if (els.total) { els.total.textContent = 'Error'; els.total.title = err.message || 'Fetch failed'; }
+      });
+  }
+
+  function openModal() {
+    modal.classList.remove('hidden');
+    modal.classList.add('flex');
+    if (rangeSel) rangeSel.value = '';
+    if (customWrap) customWrap.classList.add('hidden');
+    if (fromInput && toInput) {
+      var t = todayStr();
+      fromInput.value = t;
+      toInput.value = t;
+    }
+    fetchInsights();
+  }
+
+  function closeModal() {
+    modal.classList.add('hidden');
+    modal.classList.remove('flex');
+  }
+
+  if (rangeSel) {
+    rangeSel.addEventListener('change', function () {
+      var v = rangeSel.value;
+      if (customWrap) customWrap.classList.toggle('hidden', v !== 'custom');
+      if (v === 'custom' && fromInput && toInput) {
+        var d = new Date();
+        var to = todayStr();
+        d.setDate(d.getDate() - 7);
+        var from = d.getFullYear() + '-' + String(d.getMonth() + 1).replace(/^(\d)$/, '0$1') + '-' + String(d.getDate()).replace(/^(\d)$/, '0$1');
+        fromInput.value = from;
+        toInput.value = to;
+      }
+      if (v === 'today' || v === 'week' || v === '') fetchInsights();
+    });
+  }
+  if (applyBtn) applyBtn.addEventListener('click', fetchInsights);
+
+  logoBtn.addEventListener('click', openModal);
+  closeBtn.addEventListener('click', closeModal);
+  modal.addEventListener('click', function (e) {
+    if (e.target === modal) closeModal();
+  });
+}
+initInsights();
+
 // Load campaigns from sheet into dropdown
 function loadCampaigns() {
   var sel = document.getElementById('campaign');
