@@ -31,12 +31,6 @@ function doPost(e) {
 
     const payload = JSON.parse(postData);
 
-    // Optional: auto-generate invoice number if blank
-    let invoiceNo = (payload.invoiceNo || '').toString().trim();
-    if (!invoiceNo) {
-      invoiceNo = 'INV-' + new Date().getTime();
-    }
-
     // 3. Build row and append
     const timestamp = new Date();
     const row = [
@@ -53,7 +47,7 @@ function doPost(e) {
       payload.contactNumber || '',
       payload.deliveryAddress || '',
       payload.area || '',
-      invoiceNo,
+      (payload.invoiceNo || '').toString().trim(),
       payload.orderTotal ?? '',
       payload.amountPaid ?? ''
     ];
