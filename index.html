@@ -136,16 +136,7 @@
           </div>
           <div>
             <label class="block text-sm font-medium mb-1.5 text-slate-600 dark:text-slate-300" for="area">Area <span class="required">*</span></label>
-            <div class="relative">
-              <select class="w-full appearance-none bg-slate-50 dark:bg-slate-900 border-slate-200 dark:border-slate-700 rounded-lg focus:ring-primary focus:border-primary py-2.5 px-4 text-sm transition-colors" id="area" name="area" required>
-                <option value="">Select area</option>
-                <option value="Rawabi">Rawabi</option>
-                <option value="Malaz">Malaz</option>
-                <option value="Olaya">Olaya</option>
-                <option value="Other">Other</option>
-              </select>
-              <span class="material-icons-outlined absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400">expand_more</span>
-            </div>
+            <input class="w-full bg-slate-50 dark:bg-slate-900 border-slate-200 dark:border-slate-700 rounded-lg focus:ring-primary focus:border-primary py-2.5 px-4 text-sm transition-colors" id="area" name="area" type="text" required placeholder="Enter area">
           </div>
         </div>
       </div>
@@ -155,7 +146,7 @@
         <div class="bg-primary-light/40 dark:bg-primary/10 border border-primary/20 dark:border-primary/30 p-4 rounded-2xl space-y-4">
           <div>
             <label class="block text-sm font-semibold text-primary-dark dark:text-primary mb-1" for="orderTotal">
-              Order Total <span class="required">*</span>
+              Total amount <span class="required">*</span>
               <span class="info-icon-wrap">
                 <span class="info-icon" title="Full amount of the order" data-tooltip="Full amount of the order (e.g. 200)" tabindex="0" role="button" aria-label="What is Order Total?">i</span>
                 <span class="tooltip-popover">Full amount of the order (e.g. 200)</span>
