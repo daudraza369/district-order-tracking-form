@@ -47,11 +47,14 @@ function getFormPayload() {
   const payload = {
     chatwootId: form.chatwootId.value.trim(),
     orderType: form.orderType.value,
+    leadSource: form.leadSource ? form.leadSource.value : '',
     fulfillment: form.fulfillment.value,
+    campaign: form.campaign ? form.campaign.value : '',
     product: form.product.value.trim(),
     quantity: form.quantity.value ? parseFloat(form.quantity.value) : '',
     orderDate: form.orderDate.value,
-    requestedDate: form.requestedDate.value,
+    requestedDate: form.requestedDate ? form.requestedDate.value : '',
+    requestedTime: form.requestedTime ? form.requestedTime.value : '',
     customerName: form.customerName.value.trim(),
     email: form.email.value.trim(),
     contactNumber: form.contactNumber.value.trim(),
@@ -169,6 +172,53 @@ form.addEventListener('submit', submitOrder);
 
 // Optional: phone mask
 initPhoneMask();
+
+// Requested Date/Time: show based on fulfillment
+// Pickup & Delivery: Requested Date + Requested Time
+// Priority Delivery: Requested Time only
+function initRequestedDateTimeVisibility() {
+  var fulfillment = document.getElementById('fulfillment');
+  var dateWrap = document.getElementById('requestedDateWrap');
+  var timeWrap = document.getElementById('requestedTimeWrap');
+  var dateInput = document.getElementById('requestedDate');
+  var timeInput = document.getElementById('requestedTime');
+  if (!fulfillment || !dateWrap || !timeWrap) return;
+  function update() {
+    var val = fulfillment.value;
+    var isPickupOrDelivery = val === 'Pickup' || val === 'Delivery';
+    var isPriority = val === 'Priority Delivery';
+    dateWrap.classList.toggle('hidden', !isPickupOrDelivery);
+    timeWrap.classList.toggle('hidden', !isPriority);
+    if (!isPickupOrDelivery && dateInput) dateInput.value = '';
+    if (!isPriority && timeInput) timeInput.value = '';
+  }
+  fulfillment.addEventListener('change', update);
+  update();
+}
+initRequestedDateTimeVisibility();
+
+// Load campaigns from sheet into dropdown
+function loadCampaigns() {
+  var sel = document.getElementById('campaign');
+  if (!sel) return;
+  var url = API_URL + (API_URL.indexOf('?') >= 0 ? '&' : '?') + 'action=campaigns';
+  fetch(url)
+    .then(function(r) { return r.json(); })
+    .then(function(data) {
+      var list = data.campaigns || ['None'];
+      sel.innerHTML = '';
+      list.forEach(function(c) {
+        var opt = document.createElement('option');
+        opt.value = c;
+        opt.textContent = c;
+        sel.appendChild(opt);
+      });
+    })
+    .catch(function() {
+      sel.innerHTML = '<option value="">None</option>';
+    });
+}
+loadCampaigns();
 
 // Info icon: click to show/hide tooltip, click outside to close
 function initInfoTooltips() {

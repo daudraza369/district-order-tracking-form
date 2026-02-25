@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Order Tracking - Florist</title>
+  <title>Flower Order Tracking - Florist</title>
   <script src="https://cdn.tailwindcss.com?plugins=forms,typography"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet">
@@ -40,11 +40,9 @@
 <body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 antialiased">
   <header class="fixed top-0 left-0 right-0 z-50 flex justify-center">
   <div class="w-full max-w-md h-16 flex items-center justify-between px-4 bg-white dark:bg-slate-900 border-b border-slate-100 dark:border-slate-800">
-    <div class="flex items-center gap-3">
-      <div class="w-10 h-10 rounded-lg flex items-center justify-center overflow-hidden">
-        <img alt="Florist Logo" class="w-full h-full object-contain" src="DF — Favicon.png">
-      </div>
-      <h1 class="text-lg font-bold tracking-tight text-slate-800 dark:text-white">Order Tracking</h1>
+    <h1 class="text-lg font-bold tracking-tight text-slate-800 dark:text-white">Flower Order Tracking</h1>
+    <div class="w-10 h-10 rounded-lg flex items-center justify-center overflow-hidden">
+      <img alt="Florist Logo" class="w-full h-full object-contain" src="DF — Favicon.png">
     </div>
   </div>
 </header>
@@ -64,11 +62,20 @@
             <label class="flex items-center justify-between text-sm font-medium mb-1.5 text-slate-600 dark:text-slate-300" for="orderType"><span>Order Type</span><span class="text-[10px] text-slate-400 font-normal" dir="rtl">النوع</span></label>
             <select class="w-full bg-slate-50 dark:bg-slate-900 border-slate-200 dark:border-slate-700 rounded-lg focus:ring-primary focus:border-primary py-2.5 px-4 text-sm transition-colors pr-10" id="orderType" name="orderType">
               <option value="">Select order type</option>
-              <option value="Walk-in">Walk-in</option>
-              <option value="Instagram">Instagram</option>
+              <option value="B2B">B2B</option>
+              <option value="B2C">B2C</option>
+            </select>
+          </div>
+          <div>
+            <label class="flex items-center justify-between text-sm font-medium mb-1.5 text-slate-600 dark:text-slate-300" for="leadSource"><span>Lead Source</span></label>
+            <select class="w-full bg-slate-50 dark:bg-slate-900 border-slate-200 dark:border-slate-700 rounded-lg focus:ring-primary focus:border-primary py-2.5 px-4 text-sm transition-colors pr-10" id="leadSource" name="leadSource">
+              <option value="">Select lead source</option>
               <option value="WhatsApp">WhatsApp</option>
-              <option value="Website">Website</option>
-              <option value="Phone">Phone</option>
+              <option value="Insta">Insta</option>
+              <option value="TikTok">TikTok</option>
+              <option value="Web">Web</option>
+              <option value="Call">Call</option>
+              <option value="Lead Form">Lead Form</option>
             </select>
           </div>
           <div>
@@ -77,6 +84,13 @@
               <option value="">Select</option>
               <option value="Delivery">Delivery</option>
               <option value="Pickup">Pickup</option>
+              <option value="Priority Delivery">Priority Delivery</option>
+            </select>
+          </div>
+          <div>
+            <label class="flex items-center justify-between text-sm font-medium mb-1.5 text-slate-600 dark:text-slate-300" for="campaign"><span>Campaign</span></label>
+            <select class="w-full bg-slate-50 dark:bg-slate-900 border-slate-200 dark:border-slate-700 rounded-lg focus:ring-primary focus:border-primary py-2.5 px-4 text-sm transition-colors pr-10" id="campaign" name="campaign">
+              <option value="">Loading...</option>
             </select>
           </div>
           <div>
@@ -98,9 +112,14 @@
               <label class="flex items-center justify-between text-sm font-medium mb-1.5 text-slate-600 dark:text-slate-300" for="orderDate"><span>Order Date</span><span class="text-[10px] text-slate-400 font-normal" dir="rtl">تاريخ الطلب</span></label>
               <input class="w-full bg-slate-50 dark:bg-slate-900 border-slate-200 dark:border-slate-700 rounded-lg focus:ring-primary focus:border-primary py-2.5 px-4 text-sm transition-colors pr-10" id="orderDate" name="orderDate" type="date">
             </div>
-            <div class="isolate">
+            <div id="requestedDateWrap" class="isolate hidden">
               <label class="flex items-center justify-between text-sm font-medium mb-1.5 text-slate-600 dark:text-slate-300" for="requestedDate"><span>Requested Date</span><span class="text-[10px] text-slate-400 font-normal" dir="rtl">تاريخ المطلوب</span></label>
               <input class="w-full bg-slate-50 dark:bg-slate-900 border-slate-200 dark:border-slate-700 rounded-lg focus:ring-primary focus:border-primary py-2.5 px-4 text-sm transition-colors pr-10" id="requestedDate" name="requestedDate" type="date">
+            </div>
+            <div id="requestedTimeWrap" class="isolate hidden">
+              <label class="flex items-center justify-between text-sm font-medium mb-1.5 text-slate-600 dark:text-slate-300" for="requestedTime"><span>Requested Time</span></label>
+              <p id="requestedTimeHint" class="text-xs text-slate-500 dark:text-slate-400 mb-1.5 flex items-center justify-between"><span>When do they need the order?</span><span dir="rtl">متى يحتاجون الطلب؟</span></p>
+              <input class="w-full bg-slate-50 dark:bg-slate-900 border-slate-200 dark:border-slate-700 rounded-lg focus:ring-primary focus:border-primary py-2.5 px-4 text-sm transition-colors pr-10" id="requestedTime" name="requestedTime" type="time">
             </div>
           </div>
         </div>
@@ -122,12 +141,12 @@
             <input class="w-full bg-slate-50 dark:bg-slate-900 border-slate-200 dark:border-slate-700 rounded-lg focus:ring-primary focus:border-primary py-2.5 px-4 text-sm transition-colors" id="contactNumber" name="contactNumber" type="tel" placeholder="Phone number">
           </div>
           <div>
-            <label class="flex items-center justify-between text-sm font-medium mb-1.5 text-slate-600 dark:text-slate-300" for="deliveryAddress"><span>Delivery Address</span><span class="text-[10px] text-slate-400 font-normal" dir="rtl">العنوان</span></label>
-            <textarea class="w-full bg-slate-50 dark:bg-slate-900 border-slate-200 dark:border-slate-700 rounded-lg focus:ring-primary focus:border-primary py-2.5 px-4 text-sm transition-colors" id="deliveryAddress" name="deliveryAddress" rows="3" placeholder="Full delivery address"></textarea>
+            <label class="flex items-center justify-between text-sm font-medium mb-1.5 text-slate-600 dark:text-slate-300" for="deliveryAddress"><span>National Address</span><span class="text-[10px] text-slate-400 font-normal" dir="rtl">العنوان الوطني</span></label>
+            <input class="w-full bg-slate-50 dark:bg-slate-900 border-slate-200 dark:border-slate-700 rounded-lg focus:ring-primary focus:border-primary py-2.5 px-4 text-sm transition-colors" id="deliveryAddress" name="deliveryAddress" type="text" placeholder="8-digit national address code" maxlength="8" inputmode="numeric" pattern="[0-9]*">
           </div>
           <div>
-            <label class="flex items-center justify-between text-sm font-medium mb-1.5 text-slate-600 dark:text-slate-300" for="area"><span>Area</span><span class="text-[10px] text-slate-400 font-normal" dir="rtl">المنطقة</span></label>
-            <input class="w-full bg-slate-50 dark:bg-slate-900 border-slate-200 dark:border-slate-700 rounded-lg focus:ring-primary focus:border-primary py-2.5 px-4 text-sm transition-colors" id="area" name="area" type="text" placeholder="Enter area">
+            <label class="flex items-center justify-between text-sm font-medium mb-1.5 text-slate-600 dark:text-slate-300" for="area"><span>District</span><span class="text-[10px] text-slate-400 font-normal" dir="rtl">الحي</span></label>
+            <input class="w-full bg-slate-50 dark:bg-slate-900 border-slate-200 dark:border-slate-700 rounded-lg focus:ring-primary focus:border-primary py-2.5 px-4 text-sm transition-colors" id="area" name="area" type="text" placeholder="Enter district">
           </div>
         </div>
       </div>
@@ -167,6 +186,6 @@
     </div>
   </footer>
 
-  <script src="script.js?v=4"></script>
+  <script src="script.js?v=6"></script>
 </body>
 </html>

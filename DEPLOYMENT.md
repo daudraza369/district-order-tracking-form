@@ -89,8 +89,10 @@ Your sheet must have these columns **in this exact order** (row 1 = headers):
 |--------|---------|
 | Timestamp | (auto-filled) |
 | Chatwoot Id | 12345 |
-| Order Type | Walk-in, Instagram, etc. |
+| Order Type | B2B, B2C |
+| Lead Source | WhatsApp, Insta, TikTok, Web, Call, Lead Form |
 | **Delivery or Pickup** | Delivery, Pickup |
+| Campaign | None, Feb 14, Ramadan Red Rose (from Campaigns sheet) |
 | Product | Rose bouquet |
 | Quantity | 2 |
 | Order Date | 2024-02-25 |
@@ -103,6 +105,8 @@ Your sheet must have these columns **in this exact order** (row 1 = headers):
 | Invoice No | INV-123 or (auto) |
 | Order Total | 200.00 |
 | Amount Paid | 100.00 |
+
+**Campaigns dropdown**: Add a sheet tab named **Campaigns** in the same workbook. Row 1 = header "Campaign", column A = campaign names (one per row, e.g. Feb 14, Ramadan Red Rose). The form loads these options automatically. Add a new row to add a new campaign—no code changes needed.
 
 **Optional**: Add a "Balance Due" column with formula `=Order Total - Amount Paid` to see what's still owed.
 
