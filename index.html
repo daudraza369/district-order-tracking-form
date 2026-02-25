@@ -112,24 +112,6 @@
             <div id="barcodeList" class="mt-3 space-y-2 min-h-[1rem]"></div>
             <input type="hidden" id="barcodes" name="barcodes" value="">
           </div>
-          <!-- Barcode scanner modal -->
-          <div id="barcodeScannerModal" class="fixed inset-0 z-[100] hidden bg-black/80 flex flex-col items-center justify-center p-4 relative">
-            <div class="w-full max-w-md bg-white dark:bg-slate-800 rounded-2xl overflow-hidden">
-              <div class="p-4 flex justify-between items-center border-b border-slate-200 dark:border-slate-700">
-                <span class="font-semibold">Scan barcode</span>
-                <button type="button" id="barcodeScanClose" class="p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700">✕</button>
-              </div>
-              <div id="barcodeScanner" class="w-full aspect-square max-h-[70vh] bg-black relative"></div>
-              <p class="p-3 text-sm text-slate-500 text-center">Point camera at barcode</p>
-            </div>
-            <div id="barcodeScanSuccess" class="absolute inset-0 flex items-center justify-center pointer-events-none opacity-0 z-[101]" style="background: rgba(157,132,193,0.25);">
-              <div class="scan-tick scale-out w-20 h-20 rounded-full flex items-center justify-center" style="background: #9D84C1; box-shadow: 0 4px 20px rgba(157,132,193,0.5);">
-                <svg class="w-12 h-12 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/>
-                </svg>
-              </div>
-            </div>
-          </div>
           <div class="grid grid-cols-2 gap-4">
             <div>
               <label class="flex items-center justify-between text-sm font-medium mb-1.5 text-slate-600 dark:text-slate-300" for="quantity"><span>Quantity</span><span class="text-[10px] text-slate-400 font-normal" dir="rtl">الكمية</span></label>
@@ -218,6 +200,25 @@
       </button>
     </div>
   </footer>
+
+  <!-- Barcode scanner modal - full-page overlay -->
+  <div id="barcodeScannerModal" class="fixed inset-0 z-[9999] hidden bg-black/80 flex flex-col items-center justify-center p-4">
+    <div class="w-full max-w-md bg-white dark:bg-slate-800 rounded-2xl overflow-hidden shadow-xl">
+      <div class="p-4 flex justify-between items-center border-b border-slate-200 dark:border-slate-700">
+        <span class="font-semibold">Scan barcode</span>
+        <button type="button" id="barcodeScanClose" class="p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700">✕</button>
+      </div>
+      <div id="barcodeScanner" class="w-full aspect-square max-h-[70vh] bg-black relative"></div>
+      <p class="p-3 text-sm text-slate-500 text-center">Point camera at barcode</p>
+    </div>
+    <div id="barcodeScanSuccess" class="absolute inset-0 flex items-center justify-center pointer-events-none opacity-0 z-[101]" style="background: rgba(157,132,193,0.25);">
+      <div class="scan-tick scale-out w-20 h-20 rounded-full flex items-center justify-center" style="background: #9D84C1; box-shadow: 0 4px 20px rgba(157,132,193,0.5);">
+        <svg class="w-12 h-12 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/>
+        </svg>
+      </div>
+    </div>
+  </div>
 
   <script src="script.js?v=9"></script>
 </body>
