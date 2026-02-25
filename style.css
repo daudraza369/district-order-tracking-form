@@ -1,0 +1,129 @@
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+:root {
+  --color-primary: #9D84C1;
+  --color-error: #dc2626;
+}
+
+/* Message area */
+.message {
+  padding: 0.75rem 1rem;
+  border-radius: 12px;
+  margin-bottom: 1rem;
+  font-size: 0.9375rem;
+  display: none;
+}
+
+.message.visible {
+  display: block;
+}
+
+.message.success {
+  background-color: #d1fae5;
+  color: #065f46;
+  border: 1px solid #a7f3d0;
+}
+
+.message.error {
+  background-color: #fee2e2;
+  color: #991b1b;
+  border: 1px solid #fecaca;
+}
+
+.required {
+  color: var(--color-error);
+}
+
+/* Info icon with tooltip */
+.info-icon-wrap {
+  position: relative;
+  display: inline-flex;
+  margin-left: 0.25rem;
+}
+
+.info-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.125rem;
+  height: 1.125rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  font-style: italic;
+  color: #64748b;
+  background-color: #e2e8f0;
+  border-radius: 50%;
+  cursor: help;
+  transition: color 0.15s, background-color 0.15s;
+}
+
+.info-icon:hover {
+  color: var(--color-primary);
+  background-color: rgba(157, 132, 193, 0.2);
+}
+
+.info-icon:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px var(--color-primary);
+}
+
+.info-icon-wrap.active .tooltip-popover {
+  visibility: visible;
+  opacity: 1;
+}
+
+.tooltip-popover {
+  position: absolute;
+  left: 0;
+  top: 100%;
+  z-index: 10;
+  margin-top: 0.25rem;
+  padding: 0.5rem 0.75rem;
+  font-size: 0.8125rem;
+  font-weight: 400;
+  color: #1e293b;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  visibility: hidden;
+  opacity: 0;
+  transition: opacity 0.15s, visibility 0.15s;
+  max-width: 280px;
+  white-space: normal;
+}
+
+/* Button loading state */
+.btn-submit .btn-loading {
+  display: none;
+}
+
+.btn-submit.loading .btn-text {
+  display: none;
+}
+
+.btn-submit.loading .btn-loading {
+  display: inline;
+}
+
+/* Number inputs: hide spin buttons */
+input[type="number"] {
+  -moz-appearance: textfield;
+}
+
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Validation: highlight invalid fields */
+input:invalid:not(:placeholder-shown):not(:focus),
+select:invalid:not([value=""]):not(:focus),
+textarea:invalid:not(:placeholder-shown):not(:focus) {
+  border-color: var(--color-error) !important;
+}

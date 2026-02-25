@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Order Tracking - Florist</title>
+  <script src="https://cdn.tailwindcss.com?plugins=forms,typography"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <script>
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            primary: "#9D84C1",
+            "primary-dark": "#7e62a8",
+            "primary-light": "#f3e8ff",
+            "background-light": "#fdfbfc",
+            "background-dark": "#0f172a",
+          },
+          fontFamily: {
+            display: ["Inter", "sans-serif"],
+          },
+          borderRadius: {
+            DEFAULT: "12px",
+          },
+        },
+      },
+    };
+  </script>
+  <style>
+    body { font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; }
+    body { min-height: max(884px, 100dvh); }
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    input[type="date"]::-webkit-calendar-picker-indicator {
+      opacity: 0; position: absolute; right: 0; width: 100%; height: 100%; cursor: pointer;
+    }
+  </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 antialiased">
+  <header class="fixed top-0 left-0 right-0 z-50 flex justify-center">
+  <div class="w-full max-w-md h-16 flex items-center justify-between px-4 bg-white dark:bg-slate-900 border-b border-slate-100 dark:border-slate-800">
+    <div class="flex items-center gap-3">
+      <div class="w-10 h-10 rounded-lg flex items-center justify-center overflow-hidden">
+        <img alt="Florist Logo" class="w-full h-full object-contain" src="DF — Favicon.png">
+      </div>
+      <h1 class="text-lg font-bold tracking-tight text-slate-800 dark:text-white">Order Tracking</h1>
+    </div>
+  </div>
+</header>
+
+  <main class="pt-28 pb-32 px-4 max-w-md mx-auto">
+    <div id="message" class="message" aria-live="polite"></div>
+
+    <form id="orderForm" class="space-y-6" novalidate>
+      <div class="space-y-4">
+        <h2 class="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 px-1">Order Information</h2>
+        <div class="space-y-4 bg-white dark:bg-slate-800 p-4 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700/50">
+          <div>
+            <label class="block text-sm font-medium mb-1.5 text-slate-600 dark:text-slate-300" for="chatwootId">Chatwoot Id</label>
+            <input class="w-full bg-slate-50 dark:bg-slate-900 border-slate-200 dark:border-slate-700 rounded-lg focus:ring-primary focus:border-primary py-2.5 px-4 text-sm transition-colors" id="chatwootId" name="chatwootId" type="text" placeholder="e.g. 12345">
+          </div>
+          <div>
+            <label class="block text-sm font-medium mb-1.5 text-slate-600 dark:text-slate-300" for="orderType">Order Type <span class="required">*</span></label>
+            <div class="relative">
+              <select class="w-full appearance-none bg-slate-50 dark:bg-slate-900 border-slate-200 dark:border-slate-700 rounded-lg focus:ring-primary focus:border-primary py-2.5 px-4 text-sm transition-colors" id="orderType" name="orderType" required>
+                <option value="">Select order type</option>
+                <option value="Walk-in">Walk-in</option>
+                <option value="Instagram">Instagram</option>
+                <option value="WhatsApp">WhatsApp</option>
+                <option value="Website">Website</option>
+                <option value="Phone">Phone</option>
+              </select>
+              <span class="material-icons-outlined absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400">expand_more</span>
+            </div>
+          </div>
+          <div>
+            <label class="block text-sm font-medium mb-1.5 text-slate-600 dark:text-slate-300" for="fulfillment">Delivery or Pickup <span class="required">*</span></label>
+            <div class="relative">
+              <select class="w-full appearance-none bg-slate-50 dark:bg-slate-900 border-slate-200 dark:border-slate-700 rounded-lg focus:ring-primary focus:border-primary py-2.5 px-4 text-sm transition-colors" id="fulfillment" name="fulfillment" required>
+                <option value="">Select</option>
+                <option value="Delivery">Delivery</option>
+                <option value="Pickup">Pickup</option>
+              </select>
+              <span class="material-icons-outlined absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400">expand_more</span>
+            </div>
+          </div>
+          <div>
+            <label class="block text-sm font-medium mb-1.5 text-slate-600 dark:text-slate-300" for="product">Product <span class="required">*</span></label>
+            <input class="w-full bg-slate-50 dark:bg-slate-900 border-slate-200 dark:border-slate-700 rounded-lg focus:ring-primary focus:border-primary py-2.5 px-4 text-sm transition-colors" id="product" name="product" type="text" required placeholder="Product name or description">
+          </div>
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <label class="block text-sm font-medium mb-1.5 text-slate-600 dark:text-slate-300" for="quantity">Quantity <span class="required">*</span></label>
+              <input class="w-full bg-slate-50 dark:bg-slate-900 border-slate-200 dark:border-slate-700 rounded-lg focus:ring-primary focus:border-primary py-2.5 px-4 text-sm transition-colors" id="quantity" name="quantity" type="number" required min="1" placeholder="0">
+            </div>
+            <div>
+              <label class="block text-sm font-medium mb-1.5 text-slate-600 dark:text-slate-300" for="invoiceNo">Invoice No</label>
+              <input class="w-full bg-slate-50 dark:bg-slate-900 border-slate-200 dark:border-slate-700 rounded-lg focus:ring-primary focus:border-primary py-2.5 px-4 text-sm transition-colors" id="invoiceNo" name="invoiceNo" type="text" placeholder="Leave blank to auto-generate">
+            </div>
+          </div>
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <label class="block text-sm font-medium mb-1.5 text-slate-600 dark:text-slate-300" for="orderDate">Order Date <span class="required">*</span></label>
+              <input class="w-full bg-slate-50 dark:bg-slate-900 border-slate-200 dark:border-slate-700 rounded-lg focus:ring-primary focus:border-primary py-2.5 px-4 text-sm transition-colors" id="orderDate" name="orderDate" type="date" required>
+            </div>
+            <div>
+              <label class="block text-sm font-medium mb-1.5 text-slate-600 dark:text-slate-300" for="requestedDate">Requested Date <span class="required">*</span></label>
+              <input class="w-full bg-slate-50 dark:bg-slate-900 border-slate-200 dark:border-slate-700 rounded-lg focus:ring-primary focus:border-primary py-2.5 px-4 text-sm transition-colors" id="requestedDate" name="requestedDate" type="date" required>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="space-y-4">
+        <h2 class="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 px-1">Customer Details</h2>
+        <div class="space-y-4 bg-white dark:bg-slate-800 p-4 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700/50">
+          <div>
+            <label class="block text-sm font-medium mb-1.5 text-slate-600 dark:text-slate-300" for="customerName">Customer Name <span class="required">*</span></label>
+            <input class="w-full bg-slate-50 dark:bg-slate-900 border-slate-200 dark:border-slate-700 rounded-lg focus:ring-primary focus:border-primary py-2.5 px-4 text-sm transition-colors" id="customerName" name="customerName" type="text" required placeholder="Full name">
+          </div>
+          <div>
+            <label class="block text-sm font-medium mb-1.5 text-slate-600 dark:text-slate-300" for="email">Email <span class="required">*</span></label>
+            <input class="w-full bg-slate-50 dark:bg-slate-900 border-slate-200 dark:border-slate-700 rounded-lg focus:ring-primary focus:border-primary py-2.5 px-4 text-sm transition-colors" id="email" name="email" type="email" required placeholder="customer@example.com">
+          </div>
+          <div>
+            <label class="block text-sm font-medium mb-1.5 text-slate-600 dark:text-slate-300" for="contactNumber">Contact Number <span class="required">*</span></label>
+            <input class="w-full bg-slate-50 dark:bg-slate-900 border-slate-200 dark:border-slate-700 rounded-lg focus:ring-primary focus:border-primary py-2.5 px-4 text-sm transition-colors" id="contactNumber" name="contactNumber" type="tel" required placeholder="Phone number">
+          </div>
+          <div>
+            <label class="block text-sm font-medium mb-1.5 text-slate-600 dark:text-slate-300" for="deliveryAddress">Delivery Address <span class="required">*</span></label>
+            <textarea class="w-full bg-slate-50 dark:bg-slate-900 border-slate-200 dark:border-slate-700 rounded-lg focus:ring-primary focus:border-primary py-2.5 px-4 text-sm transition-colors" id="deliveryAddress" name="deliveryAddress" rows="3" required placeholder="Full delivery address"></textarea>
+          </div>
+          <div>
+            <label class="block text-sm font-medium mb-1.5 text-slate-600 dark:text-slate-300" for="area">Area <span class="required">*</span></label>
+            <div class="relative">
+              <select class="w-full appearance-none bg-slate-50 dark:bg-slate-900 border-slate-200 dark:border-slate-700 rounded-lg focus:ring-primary focus:border-primary py-2.5 px-4 text-sm transition-colors" id="area" name="area" required>
+                <option value="">Select area</option>
+                <option value="Rawabi">Rawabi</option>
+                <option value="Malaz">Malaz</option>
+                <option value="Olaya">Olaya</option>
+                <option value="Other">Other</option>
+              </select>
+              <span class="material-icons-outlined absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400">expand_more</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="space-y-4">
+        <h2 class="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 px-1">Payment</h2>
+        <div class="bg-primary-light/40 dark:bg-primary/10 border border-primary/20 dark:border-primary/30 p-4 rounded-2xl space-y-4">
+          <div>
+            <label class="block text-sm font-semibold text-primary-dark dark:text-primary mb-1" for="orderTotal">
+              Order Total <span class="required">*</span>
+              <span class="info-icon-wrap">
+                <span class="info-icon" title="Full amount of the order" data-tooltip="Full amount of the order (e.g. 200)" tabindex="0" role="button" aria-label="What is Order Total?">i</span>
+                <span class="tooltip-popover">Full amount of the order (e.g. 200)</span>
+              </span>
+            </label>
+            <input class="w-full bg-white/50 dark:bg-slate-900 border-transparent dark:border-transparent focus:ring-primary focus:border-primary rounded-lg py-2.5 px-4 text-right font-semibold text-primary-dark dark:text-primary" id="orderTotal" name="orderTotal" type="number" required min="0" step="0.01" placeholder="e.g. 200">
+          </div>
+          <div>
+            <label class="block text-sm font-semibold text-primary-dark dark:text-primary mb-1" for="amountPaid">
+              Amount Paid <span class="required">*</span>
+              <span class="info-icon-wrap">
+                <span class="info-icon" title="What they've paid so far" data-tooltip="What they've paid so far (e.g. 0, 100, 200)" tabindex="0" role="button" aria-label="What is Amount Paid?">i</span>
+                <span class="tooltip-popover">What they've paid so far (e.g. 0, 100, 200)</span>
+              </span>
+            </label>
+            <input class="w-full bg-white/50 dark:bg-slate-900 border-transparent dark:border-transparent focus:ring-primary focus:border-primary rounded-lg py-2.5 px-4 text-right font-semibold text-primary-dark dark:text-primary" id="amountPaid" name="amountPaid" type="number" required min="0" step="0.01" placeholder="e.g. 0, 100, 200">
+          </div>
+        </div>
+      </div>
+    </form>
+  </main>
+
+  <footer class="fixed bottom-0 left-0 right-0 bg-white/90 dark:bg-slate-900/90 backdrop-blur-md border-t border-slate-100 dark:border-slate-800 p-4 pb-8 z-50">
+    <div class="max-w-md mx-auto">
+      <button type="submit" form="orderForm" id="submitBtn" class="btn-submit w-full bg-primary hover:bg-primary-dark text-white font-semibold py-4 rounded-xl shadow-lg shadow-primary/20 active:scale-[0.98] transition-all flex items-center justify-center gap-2">
+        <span class="btn-text">Save</span>
+        <span class="btn-loading" aria-hidden="true">Saving...</span>
+      </button>
+    </div>
+  </footer>
+
+  <script src="script.js?v=4"></script>
+</body>
+</html>
