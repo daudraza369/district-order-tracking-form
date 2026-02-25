@@ -193,6 +193,7 @@ async function submitOrder(e) {
       showMessage(errMsg, 'error');
     }
   } catch (err) {
+    console.error('Order submission failed:', err);
     showMessage('Network error. Please check your connection and try again.', 'error');
   } finally {
     setLoading(false);
