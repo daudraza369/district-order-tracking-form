@@ -179,9 +179,6 @@ async function submitOrder(e) {
   try {
     const res = await fetch(API_URL, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
       body: JSON.stringify(payload)
     });
 
@@ -196,6 +193,7 @@ async function submitOrder(e) {
       showMessage(errMsg, 'error');
     }
   } catch (err) {
+    console.error('Order submission failed:', err);
     showMessage('Network error. Please check your connection and try again.', 'error');
   } finally {
     setLoading(false);
