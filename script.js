@@ -65,51 +65,27 @@ function getFormPayload() {
 }
 
 /**
- * Validate required fields
+ * Validate form (all fields optional; only validate numeric bounds when provided)
  * @returns {string|null} Error message or null if valid
  */
 function validateForm() {
-  const required = [
-    { id: 'orderType', label: 'Order Type' },
-    { id: 'fulfillment', label: 'Delivery or Pickup' },
-    { id: 'product', label: 'Product' },
-    { id: 'quantity', label: 'Quantity' },
-    { id: 'orderDate', label: 'Order Date' },
-    { id: 'requestedDate', label: 'Requested Date' },
-    { id: 'customerName', label: 'Customer Name' },
-    { id: 'email', label: 'Email' },
-    { id: 'contactNumber', label: 'Contact Number' },
-    { id: 'deliveryAddress', label: 'Delivery Address' },
-    { id: 'area', label: 'Area' },
-    { id: 'orderTotal', label: 'Order Total' },
-    { id: 'amountPaid', label: 'Amount Paid' }
-  ];
-
-  for (const field of required) {
-    const el = form[field.id];
-    const val = el ? (el.value || '').toString().trim() : '';
-    if (!val) {
-      return field.label + ' is required.';
-    }
-  }
-
   const qty = parseFloat(form.quantity.value);
-  if (isNaN(qty) || qty < 1) {
-    return 'Quantity must be at least 1.';
+  if (form.quantity.value && (isNaN(qty) || qty < 0)) {
+    return 'Quantity must be 0 or greater.';
   }
 
   const orderTotal = parseFloat(form.orderTotal.value);
-  if (isNaN(orderTotal) || orderTotal < 0) {
-    return 'Order Total must be 0 or greater.';
+  if (form.orderTotal.value && (isNaN(orderTotal) || orderTotal < 0)) {
+    return 'Total amount must be 0 or greater.';
   }
 
   const amountPaid = parseFloat(form.amountPaid.value);
-  if (isNaN(amountPaid) || amountPaid < 0) {
+  if (form.amountPaid.value && (isNaN(amountPaid) || amountPaid < 0)) {
     return 'Amount Paid must be 0 or greater.';
   }
 
-  if (amountPaid > orderTotal) {
-    return 'Amount Paid cannot exceed Order Total.';
+  if (form.orderTotal.value && form.amountPaid.value && amountPaid > orderTotal) {
+    return 'Amount Paid cannot exceed Total amount.';
   }
 
   return null;
