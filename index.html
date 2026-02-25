@@ -8,6 +8,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
   <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
   <script>
     tailwind.config = {
@@ -36,6 +37,10 @@
     body { min-height: max(884px, 100dvh); }
     .no-scrollbar::-webkit-scrollbar { display: none; }
     .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    #barcodeScanSuccess { transition: opacity 0.2s ease; }
+    #barcodeScanSuccess .scan-tick { transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1); }
+    #barcodeScanSuccess .scan-tick.scale-in { transform: scale(1); }
+    #barcodeScanSuccess .scan-tick.scale-out { transform: scale(0); }
   </style>
 </head>
 <body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 antialiased">
@@ -108,14 +113,21 @@
             <input type="hidden" id="barcodes" name="barcodes" value="">
           </div>
           <!-- Barcode scanner modal -->
-          <div id="barcodeScannerModal" class="fixed inset-0 z-[100] hidden bg-black/80 flex flex-col items-center justify-center p-4">
+          <div id="barcodeScannerModal" class="fixed inset-0 z-[100] hidden bg-black/80 flex flex-col items-center justify-center p-4 relative">
             <div class="w-full max-w-md bg-white dark:bg-slate-800 rounded-2xl overflow-hidden">
               <div class="p-4 flex justify-between items-center border-b border-slate-200 dark:border-slate-700">
                 <span class="font-semibold">Scan barcode</span>
                 <button type="button" id="barcodeScanClose" class="p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700">✕</button>
               </div>
-              <div id="barcodeScanner" class="w-full aspect-square max-h-[70vh] bg-black"></div>
+              <div id="barcodeScanner" class="w-full aspect-square max-h-[70vh] bg-black relative"></div>
               <p class="p-3 text-sm text-slate-500 text-center">Point camera at barcode</p>
+            </div>
+            <div id="barcodeScanSuccess" class="absolute inset-0 flex items-center justify-center pointer-events-none opacity-0 z-[101]" style="background: rgba(157,132,193,0.25);">
+              <div class="scan-tick scale-out w-20 h-20 rounded-full flex items-center justify-center" style="background: #9D84C1; box-shadow: 0 4px 20px rgba(157,132,193,0.5);">
+                <svg class="w-12 h-12 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/>
+                </svg>
+              </div>
             </div>
           </div>
           <div class="grid grid-cols-2 gap-4">
@@ -207,6 +219,6 @@
     </div>
   </footer>
 
-  <script src="script.js?v=8"></script>
+  <script src="script.js?v=9"></script>
 </body>
 </html>

@@ -256,18 +256,67 @@ function initBarcodeScanner() {
     });
   }
 
+  function playScanSound() {
+    try {
+      var ctx = new (window.AudioContext || window.webkitAudioContext)();
+      var osc = ctx.createOscillator();
+      var gain = ctx.createGain();
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.frequency.value = 800;
+      osc.type = 'sine';
+      gain.gain.setValueAtTime(0.3, ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.15);
+      osc.start(ctx.currentTime);
+      osc.stop(ctx.currentTime + 0.15);
+    } catch (_) {}
+  }
+
+  function showScanSuccess() {
+    if (typeof jQuery !== 'undefined') {
+      jQuery('#barcodeScanSuccess').stop(true).removeClass('opacity-0').addClass('opacity-100');
+      jQuery('#barcodeScanSuccess .scan-tick').removeClass('scale-out').addClass('scale-in');
+    } else {
+      var o = document.getElementById('barcodeScanSuccess');
+      var t = o && o.querySelector('.scan-tick');
+      if (o) { o.classList.remove('opacity-0'); o.classList.add('opacity-100'); }
+      if (t) { t.classList.remove('scale-out'); t.classList.add('scale-in'); }
+    }
+  }
+
+  function hideScanSuccess() {
+    if (typeof jQuery !== 'undefined') {
+      jQuery('#barcodeScanSuccess').addClass('opacity-0').removeClass('opacity-100');
+      jQuery('#barcodeScanSuccess .scan-tick').addClass('scale-out').removeClass('scale-in');
+    } else {
+      var o = document.getElementById('barcodeScanSuccess');
+      var t = o && o.querySelector('.scan-tick');
+      if (o) { o.classList.add('opacity-0'); o.classList.remove('opacity-100'); }
+      if (t) { t.classList.add('scale-out'); t.classList.remove('scale-in'); }
+    }
+  }
+
+  function onScanSuccess(decodedText) {
+    addBarcode(decodedText);
+    playScanSound();
+    showScanSuccess();
+    setTimeout(function () {
+      hideScanSuccess();
+      closeScanner();
+    }, 800);
+  }
+
   function openScanner() {
     modal.classList.remove('hidden');
     modal.classList.add('flex');
     scannerEl.innerHTML = '';
+    hideScanSuccess();
     if (typeof Html5Qrcode !== 'undefined') {
       html5Qr = new Html5Qrcode(scannerEl.id);
       html5Qr.start(
         { facingMode: 'environment' },
         { fps: 10, qrbox: { width: 250, height: 100 } },
-        function (decodedText) {
-          addBarcode(decodedText);
-        }
+        onScanSuccess
       ).catch(function (err) {
         console.error('Camera error:', err);
         scannerEl.innerHTML = '<p class="p-4 text-red-600 text-center">Camera access denied or unavailable.</p>';
