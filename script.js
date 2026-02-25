@@ -99,32 +99,6 @@ function clearForm() {
 }
 
 /**
- * Switch footer button to "Add Another Order" mode
- */
-function switchToReentryMode() {
-  const btnText = submitBtn ? submitBtn.querySelector('.btn-text') : null;
-  if (!submitBtn || !btnText) return;
-  submitBtn.type = 'button';
-  submitBtn.removeAttribute('form');
-  btnText.textContent = 'Add Another Order';
-  submitBtn.onclick = showFormForNewOrder;
-}
-
-/**
- * Restore form and button for a new order entry
- */
-function showFormForNewOrder() {
-  const btnText = submitBtn ? submitBtn.querySelector('.btn-text') : null;
-  if (!submitBtn || !btnText) return;
-  hideMessage();
-  clearForm();
-  submitBtn.type = 'submit';
-  submitBtn.setAttribute('form', 'orderForm');
-  btnText.textContent = 'Save';
-  submitBtn.onclick = null;
-}
-
-/**
  * Submit order to backend
  */
 async function submitOrder(e) {
@@ -162,8 +136,7 @@ async function submitOrder(e) {
 
     if (data.success) {
       showMessage('Order has been saved to sheet', 'success');
-      clearForm();
-      switchToReentryMode();
+      setTimeout(function() { window.location.reload(); }, 1500);
     } else {
       const errMsg = data.error || 'Failed to save order. Please try again.';
       showMessage(errMsg, 'error');
