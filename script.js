@@ -51,6 +51,7 @@ function getFormPayload() {
     fulfillment: form.fulfillment.value,
     campaign: form.campaign ? form.campaign.value : '',
     product: form.product.value.trim(),
+    barcodes: form.barcodes ? form.barcodes.value : '',
     quantity: form.quantity.value ? parseFloat(form.quantity.value) : '',
     orderDate: form.orderDate.value,
     requestedDate: form.requestedDate ? form.requestedDate.value : '',
@@ -196,6 +197,113 @@ function initRequestedDateTimeVisibility() {
   update();
 }
 initRequestedDateTimeVisibility();
+
+// Barcode scanner: camera scan + list with + / - per item
+function initBarcodeScanner() {
+  var scanBtn = document.getElementById('barcodeScanBtn');
+  var scanClose = document.getElementById('barcodeScanClose');
+  var modal = document.getElementById('barcodeScannerModal');
+  var scannerEl = document.getElementById('barcodeScanner');
+  var listEl = document.getElementById('barcodeList');
+  var hiddenInput = document.getElementById('barcodes');
+  if (!scanBtn || !modal || !scannerEl || !listEl || !hiddenInput) return;
+
+  var items = [];
+  var html5Qr = null;
+
+  function addBarcode(code) {
+    code = String(code || '').trim();
+    if (!code) return;
+    var found = items.find(function (x) { return x.barcode === code; });
+    if (found) {
+      found.qty += 1;
+    } else {
+      items.push({ barcode: code, qty: 1 });
+    }
+    render();
+  }
+
+  function changeQty(index, delta) {
+    items[index].qty += delta;
+    if (items[index].qty < 1) items.splice(index, 1);
+    render();
+  }
+
+  function removeBarcode(index) {
+    items.splice(index, 1);
+    render();
+  }
+
+  function buildBarcodesString() {
+    return items.map(function (x) { return x.barcode + '×' + x.qty; }).join(' | ');
+  }
+
+  function render() {
+    hiddenInput.value = buildBarcodesString();
+    listEl.innerHTML = '';
+    items.forEach(function (item, i) {
+      var row = document.createElement('div');
+      row.className = 'flex items-center justify-between gap-2 px-4 py-2.5 rounded-lg bg-slate-100 dark:bg-slate-700/50';
+      row.innerHTML =
+        '<span class="text-sm font-mono truncate flex-1 min-w-0">' + item.barcode + '</span>' +
+        '<div class="flex items-center gap-1 shrink-0">' +
+        '<button type="button" class="w-8 h-8 rounded-lg bg-slate-200 dark:bg-slate-600 hover:bg-slate-300 dark:hover:bg-slate-500 flex items-center justify-center text-lg font-bold leading-none" data-action="minus" data-index="' + i + '" aria-label="Decrease">−</button>' +
+        '<span class="w-8 text-center font-semibold text-sm">' + item.qty + '</span>' +
+        '<button type="button" class="w-8 h-8 rounded-lg bg-primary hover:bg-primary-dark text-white flex items-center justify-center text-lg font-bold leading-none" data-action="plus" data-index="' + i + '" aria-label="Increase">+</button>' +
+        '<button type="button" class="w-8 h-8 rounded-lg text-slate-500 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 flex items-center justify-center ml-1" data-action="remove" data-index="' + i + '" aria-label="Remove">×</button>' +
+        '</div>';
+      listEl.appendChild(row);
+    });
+  }
+
+  function openScanner() {
+    modal.classList.remove('hidden');
+    modal.classList.add('flex');
+    scannerEl.innerHTML = '';
+    if (typeof Html5Qrcode !== 'undefined') {
+      html5Qr = new Html5Qrcode(scannerEl.id);
+      html5Qr.start(
+        { facingMode: 'environment' },
+        { fps: 10, qrbox: { width: 250, height: 100 } },
+        function (decodedText) {
+          addBarcode(decodedText);
+        }
+      ).catch(function (err) {
+        console.error('Camera error:', err);
+        scannerEl.innerHTML = '<p class="p-4 text-red-600 text-center">Camera access denied or unavailable.</p>';
+      });
+    } else {
+      scannerEl.innerHTML = '<p class="p-4 text-slate-600 text-center">Barcode library loading...</p>';
+    }
+  }
+
+  function closeScanner() {
+    modal.classList.add('hidden');
+    modal.classList.remove('flex');
+    if (html5Qr) {
+      html5Qr.stop().catch(function () {});
+      html5Qr.clear();
+      html5Qr = null;
+    }
+  }
+
+  scanBtn.addEventListener('click', openScanner);
+  scanClose.addEventListener('click', closeScanner);
+  modal.addEventListener('click', function (e) {
+    if (e.target === modal) closeScanner();
+  });
+
+  listEl.addEventListener('click', function (e) {
+    var btn = e.target.closest('button');
+    if (!btn || !btn.dataset.action) return;
+    var i = parseInt(btn.dataset.index, 10);
+    if (btn.dataset.action === 'minus') changeQty(i, -1);
+    else if (btn.dataset.action === 'plus') changeQty(i, 1);
+    else if (btn.dataset.action === 'remove') removeBarcode(i);
+  });
+}
+
+initBarcodeScanner();
 
 // Load campaigns from sheet into dropdown
 function loadCampaigns() {

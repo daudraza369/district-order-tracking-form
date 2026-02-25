@@ -78,6 +78,7 @@ function doPost(e) {
       payload.fulfillment || '',
       payload.campaign || '',
       payload.product || '',
+      payload.barcodes || '',
       payload.quantity ?? '',
       payload.orderDate || '',
       payload.requestedDate || '',
