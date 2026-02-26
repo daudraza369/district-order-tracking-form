@@ -7,7 +7,7 @@
 const SPREADSHEET_ID = '192Vwk9QaayUSgXWiX8t0HHl5-STyKQlD8fM3oNdcNZc';
 const SECRET_TOKEN = 'flowerOrder2024';
 const ORDERS_SHEET_NAME = 'Paid Orders';  // Sheet tab where orders are appended
-const CAMPAIGNS_SHEET_NAME = 'Campaigns.'; // Sheet tab with campaign list (must match exact tab name)
+const CAMPAIGNS_SHEET_NAME = 'Campaigns'; // Sheet tab with campaign list (must match exact tab name)
 
 /**
  * Handle GET requests (e.g. fetch campaigns list)
